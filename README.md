@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hesap Takibi Uygulaması
 
-## Getting Started
+Bu proje, kullanıcıların harcamalarını takip etmelerini sağlayan bir **React** uygulamasıdır. Kullanıcılar, gerçekleştirdikleri işlemleri (harcama, gelir vb.) girerek, PDF formatında rapor alabilirler. Uygulama ayrıca, **light** ve **dark mode** temaları arasında geçiş yapabilme özelliğine sahiptir.
 
-First, run the development server:
+## Özellikler
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Tema Değiştirme**: Light ve dark tema arasında geçiş yapabilirsiniz.
+- **PDF Raporu**: Harcamalarınızın raporunu **PDF** formatında indirebilirsiniz.
+- **LocalStorage**: Harcamalarınız, tarayıcınızda saklanır, böylece verileriniz kaybolmaz.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Kullanım
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Başlangıç
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Projeyi klonlayın:
 
-## Learn More
+   ```bash
+   git clone https://github.com/kullaniciadi/hesap-takibi.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+Bağımlılıkları yükleyin:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+bash
+Kodu kopyala
+npm install
+Uygulamayı başlatın:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+bash
+Kodu kopyala
+npm start
 
-## Deploy on Vercel
+## Dark Mode
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tema değiştirme butonuna tıklayarak uygulamanın light ve dark modları arasında geçiş yapabilirsiniz.
+Tema tercihiniz tarayıcınızda saklanır ve tekrar giriş yaptığınızda seçtiğiniz tema yüklenir.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## PDF Raporu
+
+Harcamalarınızı girip PDF Raporu İndir butonuna tıklayarak, işlemlerinizin yer aldığı PDF dosyasını indirebilirsiniz.
+
+## Teknolojiler
+
+React: Kullanıcı arayüzünü oluşturmak için.
+TypeScript: Statik tip denetimi için.
+jsPDF: PDF raporu oluşturmak için.
+CSS: Stilinizi kontrol etmek için.
+React Icons: Tema değiştirme ikonları için.

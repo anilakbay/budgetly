@@ -1,40 +1,54 @@
-// index.tsx
-import React, { useState } from "react";
-import AddTransaction from "../components/AddTransaction";
-import ExpenseChart from "../components/ExpenseChart";
-import TransactionList from "../components/TransactionList";
-import "../styles/App.css";
+import React, { useState, useEffect } from "react";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { jsPDF } from "jspdf";
 
-interface Transaction {
-  amount: string;
-  description: string;
-  category: string;
-  date: string;
-}
+type Transaction = { category: string; amount: number; date: string };
 
-// Ana sayfa bileşeni
 const HomePage: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]); // İşlemler
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [theme, setTheme] = useState<string>("light"); // Varsayılan olarak 'light' başlat
 
-  // İşlem ekleme fonksiyonu
-  const addTransaction = (transaction: Transaction) => {
-    // Yeni işlem ekle
-    const updatedTransactions = [...transactions, transaction];
-    setTransactions(updatedTransactions);
+  // LocalStorage'den verileri al
+  useEffect(() => {
+    const storedTransactions = JSON.parse(
+      localStorage.getItem("transactions") || "[]"
+    );
+    setTransactions(storedTransactions);
 
-    // LocalStorage'a kaydet
-    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+  }, []);
+
+  // Tema değiştir ve localStorage'a kaydet
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18).text("Harcama Raporu", 10, 10);
+    transactions.forEach((transaction, index) => {
+      doc
+        .setFontSize(12)
+        .text(
+          `${index + 1}. ${transaction.category} - ${transaction.amount} TL`,
+          10,
+          20 + index * 10
+        );
+    });
+    doc.save("harcama-raporu.pdf");
   };
 
   return (
-    <div className="home-page">
-      <h1 className="page-title">Aylık Harcama Takibi</h1>
-      {/* İşlem ekleme formu */}
-      <AddTransaction addTransaction={addTransaction} />
-      {/* Harcama grafik bileşeni */}
-      <ExpenseChart transactions={transactions} />
-      {/* İşlem listesi */}
-      <TransactionList transactions={transactions} />
+    <div className="app">
+      <h1>Hesap Takibi</h1>
+      <button onClick={generatePDF}>PDF Raporu İndir</button>
+      <button onClick={toggleTheme}>
+        {theme === "light" ? <FaMoon /> : <FaSun />} Tema Değiştir
+      </button>
     </div>
   );
 };

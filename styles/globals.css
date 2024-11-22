@@ -7,36 +7,37 @@
   box-sizing: border-box;
 }
 
+/* Genel stil ayarları */
 body {
   font-family: "Roboto", sans-serif;
   line-height: 1.6;
-  background-color: #f4f4f4; /* Light modda açık gri arka plan */
-  color: #333; /* Light modda koyu metin */
-  transition: background-color 0.3s, color 0.3s; /* Yumuşak geçiş */
+  background-color: #f4f4f4; /* Light mode açık gri arka plan */
+  color: #333; /* Light mode koyu metin */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Yumuşak geçiş */
 }
 
 /* Dark mode */
 body.dark {
-  background-color: #121212; /* Dark modda koyu arka plan */
-  color: #e0e0e0; /* Dark modda açık metin */
+  background-color: #121212; /* Dark mode koyu arka plan */
+  color: #e0e0e0; /* Dark mode açık metin */
 }
 
 /* Buton stili */
 button {
   background-color: #4caf50;
-  color: white;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease; /* Buton rengi değişim geçişi */
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #45a049; /* Hover durumunda buton rengi */
 }
 
 button:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(72, 192, 93, 0.7);
+  box-shadow: 0 0 5px rgba(72, 192, 93, 0.7); /* Buton odaklandığında ışık efekti */
 }
