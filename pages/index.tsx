@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ExpenseChart from "../components/ExpenseChart"; // Grafik bileşenini import et
+import TransactionList from "@components/TransactionList";
 
 const AddTransaction: React.FC = () => {
   const [amount, setAmount] = useState("");
@@ -92,8 +93,9 @@ const HomePage: React.FC = () => {
       <h1>Aylık Harcama Takibi</h1>
       <AddTransaction /> {/* AddTransaction bileşenini ekle */}
       <ExpenseChart /> {/* ExpenseChart bileşenini ekle */}
+      <TransactionList /> {/* TransactionList bileşenini ekle */}
     </div>
   );
 };
 
-export default HomePage; 
+export default HomePage;
