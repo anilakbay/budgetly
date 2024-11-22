@@ -1,0 +1,38 @@
+/* App.css */
+
+/* Genel bir container düzeni */
+.container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Ana buton stili */
+button {
+  background-color: #4caf50; /* Yeşil renk */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Form inputları */
+input,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+input[type="date"] {
+  background-color: #f0f0f0;
+}

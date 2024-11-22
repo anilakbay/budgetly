@@ -1,0 +1,16 @@
+/* TransactionForm.css */
+
+/* Form düzeni */
+form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hata mesajı */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}

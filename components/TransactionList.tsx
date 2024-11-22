@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from "react";
 
+// Transaction tipi, amount sayısal olarak tutulacak
 interface Transaction {
-  amount: string;
+  amount: number;
   description: string;
   category: string;
   date: string;
 }
 
+const TRANSACTIONS_KEY = "transactions"; // LocalStorage anahtarı sabit olarak tanımlandı
+
 const TransactionList: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    // LocalStorage'dan verileri al
-    const storedTransactions = JSON.parse(
-      localStorage.getItem("transactions") || "[]"
-    );
-    setTransactions(storedTransactions);
+    try {
+      // LocalStorage'dan verileri al
+      const storedTransactions = localStorage.getItem(TRANSACTIONS_KEY);
+      const parsedTransactions: Transaction[] = storedTransactions
+        ? JSON.parse(storedTransactions)
+        : [];
+
+      // Sayısal amount verisini düzenleme
+      const validTransactions = parsedTransactions.map((transaction) => ({
+        ...transaction,
+        amount: parseFloat(transaction.amount.toString()), // Sayıya dönüştürülür
+      }));
+
+      setTransactions(validTransactions);
+    } catch (error) {
+      console.error(
+        "LocalStorage'dan veriler alınırken bir hata oluştu:",
+        error
+      );
+      setTransactions([]);
+    }
   }, []); // Sadece ilk renderda çalışır
 
   return (

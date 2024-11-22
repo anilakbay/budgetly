@@ -27,63 +27,37 @@ interface Transaction {
 }
 
 const ExpenseChart: React.FC = () => {
-  // transactions dizisini useState ile yönetiyoruz
-  // Bu dizi, harcama verilerini tutacak
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // LocalStorage'dan verileri almak için useEffect kullanıyoruz
   useEffect(() => {
     // 'transactions' verisini localStorage'dan alıyoruz. Eğer veri yoksa, boş dizi dönüyoruz.
     const storedTransactions = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
-    // Veriyi state'e set ediyoruz
     setTransactions(storedTransactions);
-  }, []); // Bu useEffect sadece ilk renderda çalışır
+  }, []);
 
-  // Kategorilere göre toplam harcamaları hesaplamak için bir nesne oluşturuyoruz
-  const categories = ["Yiyecek", "Ulaşım", "Eğlence", "Faturalar", "Diğer"];
-  // Başlangıçta tüm kategorilerin harcama miktarını sıfır olarak tanımlıyoruz
-  const categorySums = {
-    Yiyecek: 0,
-    Ulaşım: 0,
-    Eğlence: 0,
-    Faturalar: 0,
-    Diğer: 0,
-  };
+  // Kategorilerin toplamını hesaplamak için reduce kullanıyoruz
+  const categorySums = transactions.reduce(
+    (acc: Record<string, number>, transaction) => {
+      const category = transaction.category || "Diğer"; // Kategori yoksa "Diğer" olarak kabul et
+      const amount = parseFloat(transaction.amount);
 
-  // transactions dizisinde döngü yaparak her bir harcamayı ilgili kategoriye ekliyoruz
-  transactions.forEach((transaction) => {
-    // Harcama miktarını sayıya çeviriyoruz ve kategoriye göre ekliyoruz
-    if (transaction.category === "Yiyecek") {
-      categorySums.Yiyecek += parseFloat(transaction.amount);
-    } else if (transaction.category === "Ulaşım") {
-      categorySums.Ulaşım += parseFloat(transaction.amount);
-    } else if (transaction.category === "Eğlence") {
-      categorySums.Eğlence += parseFloat(transaction.amount);
-    } else if (transaction.category === "Faturalar") {
-      categorySums.Faturalar += parseFloat(transaction.amount);
-    } else {
-      categorySums.Diğer += parseFloat(transaction.amount);
-    }
-  });
+      // Kategoriyi ve harcama miktarını toplamaya ekliyoruz
+      acc[category] = (acc[category] || 0) + amount;
+      return acc;
+    },
+    {}
+  );
 
-  // Grafik için gerekli veriyi hazırlıyoruz
+  // Grafik için veriyi hazırlıyoruz
+  const categories = Object.keys(categorySums); // Kategorileri dinamik olarak alıyoruz
   const data = {
-    // Grafik etiketleri (kategoriler)
-    labels: categories,
+    labels: categories, // Grafik etiketleri (dinamik olarak alınan kategoriler)
     datasets: [
       {
         label: "Bu Ayki Harcamalar", // Grafik başlığı
-        // Kategorilere göre harcamaların toplamları
-        data: [
-          categorySums.Yiyecek,
-          categorySums.Ulaşım,
-          categorySums.Eğlence,
-          categorySums.Faturalar,
-          categorySums.Diğer,
-        ],
-        // Çubuğun rengini ve stilini belirliyoruz
+        data: categories.map((category) => categorySums[category]), // Kategorilere göre harcama verisi
         backgroundColor: "rgba(75, 192, 192, 0.2)", // Çubuğun iç rengi
         borderColor: "rgba(75, 192, 192, 1)", // Çubuğun sınır rengi
         borderWidth: 1, // Çubuğun kenar çizgisi kalınlığı
@@ -91,26 +65,23 @@ const ExpenseChart: React.FC = () => {
     ],
   };
 
-  // Grafik için seçenekleri belirliyoruz
   const options = {
-    responsive: true, // Ekran boyutuna göre grafik uyum sağlasın
+    responsive: true,
     plugins: {
       title: {
-        display: true, // Başlık görünsün
-        text: "Aylık Harcama Grafiği", // Başlık metni
+        display: true,
+        text: "Aylık Harcama Grafiği",
       },
     },
     scales: {
       y: {
-        beginAtZero: true, // Y ekseni sıfırdan başlasın
+        beginAtZero: true,
       },
     },
   };
 
-  // JSX döndürüyoruz, burada grafik render edilecek
   return (
     <div className="expense-chart">
-      {/* Bar grafiği render ediyoruz */}
       <Bar data={data} options={options} />
     </div>
   );

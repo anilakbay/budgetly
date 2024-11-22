@@ -1,0 +1,24 @@
+/* globals.css */
+
+/* Sayfa genelindeki varsayılan stil sıfırlaması */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f9; /* Açık gri arka plan */
+  color: #333; /* Metin rengi */
+}
+
+h1,
+h2,
+h3 {
+  font-weight: bold;
+}
+
+button {
+  cursor: pointer;
+}
