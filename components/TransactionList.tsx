@@ -1,65 +1,42 @@
-import React, { useEffect, useState } from "react";
+// TransactionList.tsx
 
-// İşlem tipini sade tutuyoruz
+import React from "react";
+
+// Transaction tipini tekrar tanımlıyoruz
 interface Transaction {
-  amount: number;
+  amount: string;
   description: string;
   category: string;
   date: string;
 }
 
-const TRANSACTIONS_KEY = "transactions"; // Veriler için localStorage anahtarı
+// TransactionList bileşeninin props tipini tanımlıyoruz
+interface TransactionListProps {
+  transactions: Transaction[];
+}
 
-const TransactionList: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-  useEffect(() => {
-    try {
-      // Verileri localStorage'dan yükle
-      const stored = localStorage.getItem(TRANSACTIONS_KEY);
-      if (stored) {
-        const loadedTransactions: Transaction[] = JSON.parse(stored);
-        // Yüklenen verilerin doğru formatta olduğundan emin olun
-        if (Array.isArray(loadedTransactions)) {
-          setTransactions(loadedTransactions);
-        } else {
-          console.error("Yüklenen veriler geçerli bir dizi değil.");
-        }
-      } else {
-        setTransactions([]);
-      }
-    } catch (error) {
-      console.error("Veriler yüklenirken bir sorun oluştu:", error);
-    }
-  }, []);
-
+const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
   return (
     <div className="transaction-list">
-      <h2>Harcama Listesi</h2>
-      {transactions.length === 0 ? (
-        <p>Henüz işlem eklenmedi.</p>
-      ) : (
-        <ul>
-          {transactions.map((item) => (
-            <li key={item.date}>
-              {" "}
-              {/* Benzersiz bir key kullanıyoruz */}
-              <p>
-                <strong>Tutar:</strong> {item.amount.toFixed(2)} TL
-              </p>
-              <p>
-                <strong>Açıklama:</strong> {item.description}
-              </p>
-              <p>
-                <strong>Kategori:</strong> {item.category}
-              </p>
-              <p>
-                <strong>Tarih:</strong> {item.date}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <h2>İşlemler</h2>
+      <ul>
+        {transactions.map((transaction, index) => (
+          <li key={index} className="transaction-item">
+            <p>
+              <strong>Tutar:</strong> {transaction.amount} TL
+            </p>
+            <p>
+              <strong>Açıklama:</strong> {transaction.description}
+            </p>
+            <p>
+              <strong>Kategori:</strong> {transaction.category}
+            </p>
+            <p>
+              <strong>Tarih:</strong> {transaction.date}
+            </p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

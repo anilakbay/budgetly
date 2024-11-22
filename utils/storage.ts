@@ -1,7 +1,5 @@
-// Local Storage ile veri işleme fonksiyonları
-
 // Veri ekleme: Veriyi localStorage'a kaydeder
-export const saveToLocalStorage = (key: string, value: any) => {
+export const saveToLocalStorage = <T>(key: string, value: T): void => {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -11,13 +9,13 @@ export const saveToLocalStorage = (key: string, value: any) => {
 };
 
 // Veri okuma: localStorage'dan veriyi okur
-export const loadFromLocalStorage = (key: string) => {
+export const loadFromLocalStorage = <T>(key: string): T | undefined => {
   try {
     const serializedValue = localStorage.getItem(key);
     if (serializedValue === null) {
       return undefined;
     }
-    return JSON.parse(serializedValue);
+    return JSON.parse(serializedValue) as T;
   } catch (error) {
     console.error("Veri okunurken bir hata oluştu:", error);
     return undefined;
@@ -25,7 +23,7 @@ export const loadFromLocalStorage = (key: string) => {
 };
 
 // Veri silme: localStorage'dan veriyi siler
-export const removeFromLocalStorage = (key: string) => {
+export const removeFromLocalStorage = (key: string): void => {
   try {
     localStorage.removeItem(key);
   } catch (error) {
@@ -34,7 +32,7 @@ export const removeFromLocalStorage = (key: string) => {
 };
 
 // Tüm verileri temizleme: localStorage'daki tüm verileri siler
-export const clearLocalStorage = () => {
+export const clearLocalStorage = (): void => {
   try {
     localStorage.clear();
   } catch (error) {

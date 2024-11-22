@@ -1,92 +1,72 @@
-import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+// ExpenseChart.tsx
+import React from "react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
   Legend,
-} from "chart.js";
+  ResponsiveContainer,
+} from "recharts";
 
-// Chart.js modüllerini kaydediyoruz
-ChartJS.register(
-  CategoryScale, // X eksenindeki kategoriler için
-  LinearScale, // Y ekseninde sayısal veriler için
-  BarElement, // Bar grafiği elemanı
-  Title, // Başlık eklemek için
-  Tooltip, // Grafikteki veriler için ipuçları
-  Legend // Grafik için açıklama (legend)
-);
-
-// Harcama verileri için TypeScript türü tanımlıyoruz
 interface Transaction {
-  amount: number; // Harcama miktarı (number olarak)
-  category: string; // Harcama kategorisi (örneğin: Yiyecek, Ulaşım, vb.)
+  amount: string;
+  description: string;
+  category: string;
+  date: string;
 }
 
-const ExpenseChart: React.FC = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+interface ExpenseChartProps {
+  transactions: Transaction[];
+}
 
-  useEffect(() => {
-    // 'transactions' verisini localStorage'dan alıyoruz. Eğer veri yoksa, boş dizi dönüyoruz.
-    const storedTransactions: Transaction[] = JSON.parse(
-      localStorage.getItem("transactions") || "[]"
-    ).map((transaction: { amount: string; category: string }) => ({
-      ...transaction,
-      amount: parseFloat(transaction.amount), // amount'u sayıya çeviriyoruz
-    }));
+const ExpenseChart: React.FC<ExpenseChartProps> = ({ transactions }) => {
+  // Kategorilere göre harcamaları gruplayacağız
+  const categorizedData = transactions.reduce((acc, transaction) => {
+    const category = transaction.category;
+    const amount = parseFloat(transaction.amount);
 
-    setTransactions(storedTransactions);
-  }, []);
+    // Eğer kategori daha önce eklenmemişse, yeni bir kategori ekliyoruz
+    if (!acc[category]) {
+      acc[category] = 0;
+    }
+    acc[category] += amount;
 
-  // Kategorilerin toplamını hesaplamak için reduce kullanıyoruz
-  const categorySums = transactions.reduce(
-    (acc: Record<string, number>, transaction) => {
-      const category = transaction.category || "Diğer"; // Kategori yoksa "Diğer" olarak kabul et
-      const amount = transaction.amount;
+    return acc;
+  }, {} as { [key: string]: number });
 
-      // Kategoriyi ve harcama miktarını toplamaya ekliyoruz
-      acc[category] = (acc[category] || 0) + amount;
-      return acc;
-    },
-    {}
-  );
-
-  // Grafik için veriyi hazırlıyoruz
-  const categories = Object.keys(categorySums); // Kategorileri dinamik olarak alıyoruz
-  const data = {
-    labels: categories, // Grafik etiketleri (dinamik olarak alınan kategoriler)
-    datasets: [
-      {
-        label: "Bu Ayki Harcamalar", // Grafik başlığı
-        data: categories.map((category) => categorySums[category]), // Kategorilere göre harcama verisi
-        backgroundColor: "rgba(75, 192, 192, 0.2)", // Çubuğun iç rengi
-        borderColor: "rgba(75, 192, 192, 1)", // Çubuğun sınır rengi
-        borderWidth: 1, // Çubuğun kenar çizgisi kalınlığı
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      title: {
-        display: true,
-        text: "Aylık Harcama Grafiği",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
+  // Gruplanan veriyi PieChart için uygun bir formata dönüştürme
+  const chartData = Object.keys(categorizedData).map((category) => ({
+    name: category,
+    value: categorizedData[category],
+  }));
 
   return (
     <div className="expense-chart">
-      <Bar data={data} options={options} />
+      <h2>Harcama Grafiği</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={chartData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            fill="#8884d8"
+            label
+          >
+            {chartData.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={index % 2 === 0 ? "#82ca9d" : "#8884d8"}
+              />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 };

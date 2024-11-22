@@ -1,79 +1,66 @@
+// AddTransaction.tsx
 import React, { useState } from "react";
 
-const AddTransaction: React.FC = () => {
-  const [formData, setFormData] = useState({
-    amount: "",
-    description: "",
-    category: "",
-    date: "",
-  });
-  const [error, setError] = useState<string>("");
+// `Transaction` arayüzü
+interface Transaction {
+  amount: string;
+  description: string;
+  category: string;
+  date: string;
+}
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+// `AddTransactionProps` arayüzü
+interface AddTransactionProps {
+  addTransaction: (transaction: Transaction) => void; // `addTransaction` fonksiyonunu alıyoruz
+}
 
+const AddTransaction: React.FC<AddTransactionProps> = ({ addTransaction }) => {
+  // Form verileri için state
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+
+  // Form submit işlemi
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { amount, description, category, date } = formData;
+    const newTransaction: Transaction = {
+      amount,
+      description,
+      category,
+      date,
+    };
 
-    // Alanları kontrol et
-    if (!amount || !description || !category || !date) {
-      setError("Tüm alanları doldurduğunuzdan emin olun.");
-      return;
-    }
+    // Yeni işlemi ekliyoruz
+    addTransaction(newTransaction);
 
-    // Tutarı sayıya dönüştür ve geçerliliğini kontrol et
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount)) {
-      setError("Geçerli bir tutar girin.");
-      return;
-    }
-
-    const newTransaction = { ...formData, amount: parsedAmount };
-
-    // LocalStorage'a işlemi kaydet
-    const storedTransactions = JSON.parse(
-      localStorage.getItem("transactions") || "[]"
-    );
-    localStorage.setItem(
-      "transactions",
-      JSON.stringify([...storedTransactions, newTransaction])
-    );
-
-    // Formu sıfırla
-    setFormData({ amount: "", description: "", category: "", date: "" });
-    setError("");
+    // Formu sıfırlıyoruz
+    setAmount("");
+    setDescription("");
+    setCategory("");
+    setDate("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="transaction-form">
-      {error && <div className="error-message">{error}</div>}
+    <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="amount">Tutar</label>
         <input
-          id="amount"
-          name="amount"
           type="number"
-          value={formData.amount}
-          onChange={handleChange}
-          placeholder="Tutar"
+          id="amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
           required
         />
       </div>
       <div>
         <label htmlFor="description">Açıklama</label>
         <input
-          id="description"
-          name="description"
           type="text"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Açıklama"
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           required
         />
       </div>
@@ -81,30 +68,27 @@ const AddTransaction: React.FC = () => {
         <label htmlFor="category">Kategori</label>
         <select
           id="category"
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           required
         >
-          <option value="">Kategori Seçin</option>
-          <option value="income">Gelir</option>
-          <option value="expense">Gider</option>
+          <option value="">Seçiniz</option>
+          <option value="Gıda">Gıda</option>
+          <option value="Fatura">Fatura</option>
+          <option value="Eğlence">Eğlence</option>
         </select>
       </div>
       <div>
         <label htmlFor="date">Tarih</label>
         <input
-          id="date"
-          name="date"
           type="date"
-          value={formData.date}
-          onChange={handleChange}
+          id="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
           required
         />
       </div>
-      <button type="submit" className="submit-button">
-        Ekle
-      </button>
+      <button type="submit">İşlem Ekle</button>
     </form>
   );
 };

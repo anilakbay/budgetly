@@ -1,26 +1,51 @@
-/* App.css */
+/* Global stil sıfırlama ve temel düzenleme */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Tutarlı genişlik ve yükseklik hesaplaması */
+}
 
-/* Genel bir container düzeni */
+body {
+  font-family: "Roboto", sans-serif; /* Genel font ailesi */
+  line-height: 1.6; /* Satır yüksekliği */
+  background-color: #f4f4f4; /* Arka plan rengi */
+  color: #333; /* Metin rengi */
+  padding: 20px;
+}
+
+/* Ana container düzeni */
 .container {
   width: 80%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  background-color: #fff; /* Arka plan rengi */
+  border-radius: 8px; /* Yuvarlatılmış köşeler */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
 }
 
 /* Ana buton stili */
 button {
-  background-color: #4caf50; /* Yeşil renk */
+  background-color: var(--primary-color, #4caf50); /* Yeşil renk */
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 16px;
+  font-family: inherit; /* Aynı font ailesi */
+  cursor: pointer; /* İmleci pointer yapar */
   transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--primary-hover-color, #45a049); /* Hover rengi */
+}
+
+button:focus {
+  outline: none; /* Butona odaklanıldığında kutu görünmesin */
+  box-shadow: 0 0 5px rgba(72, 192, 93, 0.7); /* Butona odaklanıldığında hafif yeşil gölge */
 }
 
 /* Form inputları */
@@ -31,8 +56,26 @@ select {
   border-radius: 5px;
   width: 100%;
   margin: 10px 0;
+  font-family: inherit; /* Aynı font ailesi */
 }
 
 input[type="date"] {
   background-color: #f0f0f0;
+  border: 1px solid #ddd; /* Tarih input'u için daha belirgin sınır */
+}
+
+input:focus,
+select:focus {
+  border-color: var(
+    --focus-border-color,
+    #4caf50
+  ); /* Odaklanıldığında yeşil kenarlık */
+  box-shadow: 0 0 5px rgba(72, 192, 93, 0.5); /* Odaklanıldığında hafif yeşil gölge */
+}
+
+/* CSS değişkenleri (isteğe bağlı) */
+:root {
+  --primary-color: #4caf50; /* Temel buton rengi */
+  --primary-hover-color: #45a049; /* Hover rengi */
+  --focus-border-color: #4caf50; /* Odaklanıldığında kenarlık rengi */
 }
