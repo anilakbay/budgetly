@@ -1,19 +1,17 @@
-// App.tsx
-
 import React, { useState, useEffect } from "react";
-import AddTransaction from "./components/AddTransaction"; // AddTransaction bileşenini doğru import ediyoruz
+import { jsPDF } from "jspdf";
 
-interface Transaction {
-  amount: string;
-  description: string;
+// Transaction tipi (daha önce bunu tanımlamıştık)
+type Transaction = {
   category: string;
+  amount: number;
   date: string;
-}
+};
 
 const App: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // LocalStorage'dan işlemleri yükleme
+  // Local storage'den verileri alalım
   useEffect(() => {
     const storedTransactions = JSON.parse(
       localStorage.getItem("transactions") || "[]"
@@ -21,42 +19,35 @@ const App: React.FC = () => {
     setTransactions(storedTransactions);
   }, []);
 
-  // İşlem ekleme
-  const handleTransactionAdd = (newTransaction: Transaction) => {
-    const updatedTransactions = [...transactions, newTransaction];
-    setTransactions(updatedTransactions);
-    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+  // PDF oluşturma fonksiyonu
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Harcama Raporu", 10, 10);
+
+    let yOffset = 20;
+    transactions.forEach((transaction, index) => {
+      doc.setFontSize(12);
+      doc.text(
+        `${index + 1}. ${transaction.category} - ${transaction.amount} TL`,
+        10,
+        yOffset
+      );
+      yOffset += 10;
+    });
+
+    // PDF'i indirme
+    doc.save("harcama-raporu.pdf");
   };
 
   return (
     <div className="app">
       <h1>Hesap Takibi</h1>
+      {/* PDF raporu indirme butonu */}
+      <button onClick={generatePDF}>PDF Raporu İndir</button>
 
-      {/* AddTransaction bileşenine işlemi eklemek için handleTransactionAdd fonksiyonunu geçiyoruz */}
-      <AddTransaction onTransactionAdd={handleTransactionAdd} />
-
-      {/* İşlem listesi */}
-      <div className="transaction-list">
-        <h2>İşlemler</h2>
-        <ul>
-          {transactions.map((transaction, index) => (
-            <li key={index} className="transaction-item">
-              <p>
-                <strong>Tutar:</strong> {transaction.amount} TL
-              </p>
-              <p>
-                <strong>Açıklama:</strong> {transaction.description}
-              </p>
-              <p>
-                <strong>Kategori:</strong> {transaction.category}
-              </p>
-              <p>
-                <strong>Tarih:</strong> {transaction.date}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Diğer bileşenler ve içerikler */}
     </div>
   );
 };
