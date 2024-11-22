@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-// Transaction tipi, amount sayısal olarak tutulacak
+// İşlem tipini sade tutuyoruz
 interface Transaction {
   amount: number;
   description: string;
@@ -8,57 +8,54 @@ interface Transaction {
   date: string;
 }
 
-const TRANSACTIONS_KEY = "transactions"; // LocalStorage anahtarı sabit olarak tanımlandı
+const TRANSACTIONS_KEY = "transactions"; // Veriler için localStorage anahtarı
 
 const TransactionList: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     try {
-      // LocalStorage'dan verileri al
-      const storedTransactions = localStorage.getItem(TRANSACTIONS_KEY);
-      const parsedTransactions: Transaction[] = storedTransactions
-        ? JSON.parse(storedTransactions)
-        : [];
-
-      // Sayısal amount verisini düzenleme
-      const validTransactions = parsedTransactions.map((transaction) => ({
-        ...transaction,
-        amount: parseFloat(transaction.amount.toString()), // Sayıya dönüştürülür
-      }));
-
-      setTransactions(validTransactions);
+      // Verileri localStorage'dan yükle
+      const stored = localStorage.getItem(TRANSACTIONS_KEY);
+      if (stored) {
+        const loadedTransactions: Transaction[] = JSON.parse(stored);
+        // Yüklenen verilerin doğru formatta olduğundan emin olun
+        if (Array.isArray(loadedTransactions)) {
+          setTransactions(loadedTransactions);
+        } else {
+          console.error("Yüklenen veriler geçerli bir dizi değil.");
+        }
+      } else {
+        setTransactions([]);
+      }
     } catch (error) {
-      console.error(
-        "LocalStorage'dan veriler alınırken bir hata oluştu:",
-        error
-      );
-      setTransactions([]);
+      console.error("Veriler yüklenirken bir sorun oluştu:", error);
     }
-  }, []); // Sadece ilk renderda çalışır
+  }, []);
 
   return (
     <div className="transaction-list">
       <h2>Harcama Listesi</h2>
       {transactions.length === 0 ? (
-        <p>Henüz işlem eklemediniz.</p>
+        <p>Henüz işlem eklenmedi.</p>
       ) : (
         <ul>
-          {transactions.map((transaction, index) => (
-            <li key={index}>
+          {transactions.map((item) => (
+            <li key={item.date}>
+              {" "}
+              {/* Benzersiz bir key kullanıyoruz */}
               <p>
-                <strong>Tutar:</strong> {transaction.amount} TL
+                <strong>Tutar:</strong> {item.amount.toFixed(2)} TL
               </p>
               <p>
-                <strong>Açıklama:</strong> {transaction.description}
+                <strong>Açıklama:</strong> {item.description}
               </p>
               <p>
-                <strong>Kategori:</strong> {transaction.category}
+                <strong>Kategori:</strong> {item.category}
               </p>
               <p>
-                <strong>Tarih:</strong> {transaction.date}
+                <strong>Tarih:</strong> {item.date}
               </p>
-              <hr />
             </li>
           ))}
         </ul>

@@ -22,7 +22,7 @@ ChartJS.register(
 
 // Harcama verileri için TypeScript türü tanımlıyoruz
 interface Transaction {
-  amount: string; // Harcama miktarı (string olarak alınır çünkü veriler localStorage'dan string olarak gelir)
+  amount: number; // Harcama miktarı (number olarak)
   category: string; // Harcama kategorisi (örneğin: Yiyecek, Ulaşım, vb.)
 }
 
@@ -31,9 +31,13 @@ const ExpenseChart: React.FC = () => {
 
   useEffect(() => {
     // 'transactions' verisini localStorage'dan alıyoruz. Eğer veri yoksa, boş dizi dönüyoruz.
-    const storedTransactions = JSON.parse(
+    const storedTransactions: Transaction[] = JSON.parse(
       localStorage.getItem("transactions") || "[]"
-    );
+    ).map((transaction: { amount: string; category: string }) => ({
+      ...transaction,
+      amount: parseFloat(transaction.amount), // amount'u sayıya çeviriyoruz
+    }));
+
     setTransactions(storedTransactions);
   }, []);
 
@@ -41,7 +45,7 @@ const ExpenseChart: React.FC = () => {
   const categorySums = transactions.reduce(
     (acc: Record<string, number>, transaction) => {
       const category = transaction.category || "Diğer"; // Kategori yoksa "Diğer" olarak kabul et
-      const amount = parseFloat(transaction.amount);
+      const amount = transaction.amount;
 
       // Kategoriyi ve harcama miktarını toplamaya ekliyoruz
       acc[category] = (acc[category] || 0) + amount;

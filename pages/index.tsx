@@ -21,8 +21,21 @@ const AddTransaction: React.FC = () => {
       return;
     }
 
+    // Tutarı sayıya dönüştür
+    const parsedAmount = parseFloat(amount);
+
+    if (isNaN(parsedAmount)) {
+      setError("Tutar geçerli bir sayı olmalıdır.");
+      return;
+    }
+
     // Yeni işlem verisini oluştur
-    const newTransaction = { amount, description, category, date };
+    const newTransaction = {
+      amount: parsedAmount,
+      description,
+      category,
+      date,
+    };
 
     // LocalStorage'a işlemi kaydet
     const storedTransactions = JSON.parse(

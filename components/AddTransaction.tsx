@@ -1,57 +1,66 @@
 import React, { useState } from "react";
 
-// AddTransaction bileşeni, harcama ekleme formunu içerir.
 const AddTransaction: React.FC = () => {
-  const [amount, setAmount] = useState(""); // Tutar
-  const [description, setDescription] = useState(""); // Açıklama
-  const [category, setCategory] = useState(""); // Kategori
-  const [date, setDate] = useState(""); // Tarih
-  const [error, setError] = useState<string>(""); // Hata mesajı
+  const [formData, setFormData] = useState({
+    amount: "",
+    description: "",
+    category: "",
+    date: "",
+  });
+  const [error, setError] = useState<string>("");
 
-  // Form submit işlemi
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Formun sayfayı yeniden yüklemesini engeller
+    e.preventDefault();
 
-    // Formdaki tüm alanların dolu olduğuna emin olun
+    const { amount, description, category, date } = formData;
+
+    // Alanları kontrol et
     if (!amount || !description || !category || !date) {
       setError("Tüm alanları doldurduğunuzdan emin olun.");
       return;
     }
 
-    // Yeni işlem objesi oluşturuluyor
-    const newTransaction = {
-      amount,
-      description,
-      category,
-      date,
-    };
+    // Tutarı sayıya dönüştür ve geçerliliğini kontrol et
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount)) {
+      setError("Geçerli bir tutar girin.");
+      return;
+    }
 
-    // LocalStorage'a yeni işlemi kaydetme
+    const newTransaction = { ...formData, amount: parsedAmount };
+
+    // LocalStorage'a işlemi kaydet
     const storedTransactions = JSON.parse(
       localStorage.getItem("transactions") || "[]"
     );
-    storedTransactions.push(newTransaction);
-    localStorage.setItem("transactions", JSON.stringify(storedTransactions));
+    localStorage.setItem(
+      "transactions",
+      JSON.stringify([...storedTransactions, newTransaction])
+    );
 
-    // Formu sıfırlama ve hata mesajını kaldırma
-    setAmount("");
-    setDescription("");
-    setCategory("");
-    setDate("");
-    setError(""); // Hata mesajını sıfırlama
+    // Formu sıfırla
+    setFormData({ amount: "", description: "", category: "", date: "" });
+    setError("");
   };
 
   return (
     <form onSubmit={handleSubmit} className="transaction-form">
-      {error && <div className="error-message">{error}</div>}{" "}
-      {/* Hata mesajı */}
+      {error && <div className="error-message">{error}</div>}
       <div>
         <label htmlFor="amount">Tutar</label>
         <input
           id="amount"
+          name="amount"
           type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={formData.amount}
+          onChange={handleChange}
           placeholder="Tutar"
           required
         />
@@ -60,9 +69,10 @@ const AddTransaction: React.FC = () => {
         <label htmlFor="description">Açıklama</label>
         <input
           id="description"
+          name="description"
           type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={formData.description}
+          onChange={handleChange}
           placeholder="Açıklama"
           required
         />
@@ -71,8 +81,9 @@ const AddTransaction: React.FC = () => {
         <label htmlFor="category">Kategori</label>
         <select
           id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
           required
         >
           <option value="">Kategori Seçin</option>
@@ -84,9 +95,10 @@ const AddTransaction: React.FC = () => {
         <label htmlFor="date">Tarih</label>
         <input
           id="date"
+          name="date"
           type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={formData.date}
+          onChange={handleChange}
           required
         />
       </div>
