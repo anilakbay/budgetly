@@ -1,81 +1,81 @@
-/* Global stil sıfırlama ve temel düzenleme */
+/* Temel sıfırlama ve düzen */
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Tutarlı genişlik ve yükseklik hesaplaması */
+  box-sizing: border-box;
 }
 
+/* Genel stil ayarları */
 body {
-  font-family: "Roboto", sans-serif; /* Genel font ailesi */
-  line-height: 1.6; /* Satır yüksekliği */
-  background-color: #f4f4f4; /* Arka plan rengi */
-  color: #333; /* Metin rengi */
+  font-family: "Roboto", sans-serif;
+  line-height: 1.6;
+  background-color: #f4f4f4;
+  color: #333;
   padding: 20px;
+  transition: background-color 0.3s, color 0.3s; /* Geçiş efekti */
 }
 
-/* Ana container düzeni */
+/* Dark mode */
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Container düzeni */
 .container {
-  width: 80%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fff; /* Arka plan rengi */
-  border-radius: 8px; /* Yuvarlatılmış köşeler */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s; /* Geçiş efekti */
 }
 
-/* Ana buton stili */
+/* Dark mode container */
+body.dark .container {
+  background-color: #333;
+}
+
+/* Buton stili */
 button {
-  background-color: var(--primary-color, #4caf50); /* Yeşil renk */
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
-  font-size: 16px;
-  font-family: inherit; /* Aynı font ailesi */
-  cursor: pointer; /* İmleci pointer yapar */
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: var(--primary-hover-color, #45a049); /* Hover rengi */
+  background-color: #45a049;
 }
 
 button:focus {
-  outline: none; /* Butona odaklanıldığında kutu görünmesin */
-  box-shadow: 0 0 5px rgba(72, 192, 93, 0.7); /* Butona odaklanıldığında hafif yeşil gölge */
+  outline: none;
+  box-shadow: 0 0 5px rgba(72, 192, 93, 0.7);
 }
 
-/* Form inputları */
+/* Input ve Select stil */
 input,
 select {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 100%;
   margin: 10px 0;
-  font-family: inherit; /* Aynı font ailesi */
 }
 
 input[type="date"] {
   background-color: #f0f0f0;
-  border: 1px solid #ddd; /* Tarih input'u için daha belirgin sınır */
 }
 
+/* Focus durumu */
 input:focus,
 select:focus {
-  border-color: var(
-    --focus-border-color,
-    #4caf50
-  ); /* Odaklanıldığında yeşil kenarlık */
-  box-shadow: 0 0 5px rgba(72, 192, 93, 0.5); /* Odaklanıldığında hafif yeşil gölge */
-}
-
-/* CSS değişkenleri (isteğe bağlı) */
-:root {
-  --primary-color: #4caf50; /* Temel buton rengi */
-  --primary-hover-color: #45a049; /* Hover rengi */
-  --focus-border-color: #4caf50; /* Odaklanıldığında kenarlık rengi */
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(72, 192, 93, 0.5);
 }

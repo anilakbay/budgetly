@@ -1,53 +1,53 @@
 import React, { useState, useEffect } from "react";
+import { FaMoon, FaSun } from "react-icons/fa";
 import { jsPDF } from "jspdf";
 
-// Transaction tipi (daha önce bunu tanımlamıştık)
-type Transaction = {
-  category: string;
-  amount: number;
-  date: string;
-};
+// Transaction tipi
+type Transaction = { category: string; amount: number; date: string };
 
 const App: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [theme, setTheme] = useState<string>(
+    localStorage.getItem("theme") || "light"
+  );
 
-  // Local storage'den verileri alalım
+  // LocalStorage'den verileri al
   useEffect(() => {
-    const storedTransactions = JSON.parse(
-      localStorage.getItem("transactions") || "[]"
-    );
-    setTransactions(storedTransactions);
+    const stored = JSON.parse(localStorage.getItem("transactions") || "[]");
+    setTransactions(stored);
   }, []);
 
-  // PDF oluşturma fonksiyonu
+  // Tema değiştir ve localStorage'a kaydet
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
+
+  // PDF oluştur
   const generatePDF = () => {
     const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text("Harcama Raporu", 10, 10);
-
-    let yOffset = 20;
+    doc.setFontSize(18).text("Harcama Raporu", 10, 10);
     transactions.forEach((transaction, index) => {
-      doc.setFontSize(12);
-      doc.text(
-        `${index + 1}. ${transaction.category} - ${transaction.amount} TL`,
-        10,
-        yOffset
-      );
-      yOffset += 10;
+      doc
+        .setFontSize(12)
+        .text(
+          `${index + 1}. ${transaction.category} - ${transaction.amount} TL`,
+          10,
+          20 + index * 10
+        );
     });
-
-    // PDF'i indirme
     doc.save("harcama-raporu.pdf");
   };
 
   return (
     <div className="app">
       <h1>Hesap Takibi</h1>
-      {/* PDF raporu indirme butonu */}
       <button onClick={generatePDF}>PDF Raporu İndir</button>
-
-      {/* Diğer bileşenler ve içerikler */}
+      <button onClick={toggleTheme}>
+        {theme === "light" ? <FaMoon /> : <FaSun />} Tema Değiştir
+      </button>
     </div>
   );
 };
